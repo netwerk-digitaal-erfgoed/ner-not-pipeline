@@ -13,4 +13,14 @@ $ source venv/bin/activate
 ```
 This will result in a prompt starting with `(venv)`, the virtual environment is now activated.
 
+Now install the requirend packages:
+```sh
+$ pip install -r requirements.txt
+```
+This will result in list of packages that are being installed and it should end with no errors.
 
+We are using the Spacy module for doing the Named Entity Recognition (NER). And because we are analyzing Dutch texts we need to download a Dutch model, in this case the 'nl_core_news_lg' model:
+```
+$ python -m spacy download nl_core_news_lg
+```
+It will take a short while to download the almost 600MB sized model.
