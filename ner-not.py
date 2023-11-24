@@ -45,7 +45,7 @@ def matchLabel(labels,searchLabel):
 def Refine(ner,nerType):
 
   if not (nerType in config):
-    print(row[1],"not in configfile")
+    print("Skipped type",row[1])
     return False
 
   # use source selection from the config.json
@@ -58,22 +58,21 @@ def Refine(ner,nerType):
   # select the resultLists per source
   resultList = data['data']['terms']
   for results in resultList:
-     
-    # select list of terms from the resultset
-    terms=results['result']['terms']
-    for term in terms:
-    #print("Process term",term)
-    #print("Find matching prefLabel...")
-      found=matchLabel(term['prefLabel'],ner)
-      if(found):
-        #print("Found",found,"in prefLabel for",term['uri'])
-        return term['uri']
-      #print("Find matching altLabel...")
-      found=matchLabel(term['altLabel'],ner)
-      if(found):
-        #print("Found",found,"in altLabel for",term['uri'])
-        return term['uri']
-      
+    if(results['result']['__typename']=="Terms"):
+      # select list of terms from the resultset
+      terms=results['result']['terms']
+      for term in terms:
+        #print("Process term",term)
+        #print("Find matching prefLabel...")
+        found=matchLabel(term['prefLabel'],ner)
+        if(found):
+          #print("Found",found,"in prefLabel for",term['uri'])
+          return term['uri']
+        #print("Find matching altLabel...")
+        found=matchLabel(term['altLabel'],ner)
+        if(found):
+          #print("Found",found,"in altLabel for",term['uri'])
+          return term['uri']
   return False
 
 
