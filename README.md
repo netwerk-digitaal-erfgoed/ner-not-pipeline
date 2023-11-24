@@ -19,8 +19,20 @@ $ pip install -r requirements.txt
 ```
 This will result in list of packages that are being installed and it should end with no errors.
 
-We are using the Spacy module for doing the Named Entity Recognition (NER). And because we are analyzing Dutch texts we need to download a Dutch model, in this case the 'nl_core_news_lg' model:
+We are using the Spacy module for doing the Named Entity Recognition (NER). And because we are analyzing Dutch texts we need to download a Dutch model, in this case the `nl_core_news_lg` model:
 ```
 $ python -m spacy download nl_core_news_lg
 ```
 It will take a short while to download the almost 600MB sized model.
+
+Start the program with:
+```
+$ python3 ner-not.py
+```
+
+Change the plain text in the `some.txt` file to try out different results of the pipeline.
+
+The pipeline uses the Spacy NER functionality to extract different type of named entities. The extracted entities are fed to the Network of Terms (NoT) to find matching terms. The current program lists the found entities and their type. The reconcilation with the Network of Terms is configured per type. The `config.json` file connects the NER type to the relevant source to query for the Network of Terms.
+
+Bases on the configuration all the NoT sources are queried. The results are processed in the order defined in the config file. As soon as one of the found pref- or altLabels has an exact match with the named entity the URI of this term is return and the processing of the result stops. 
+
