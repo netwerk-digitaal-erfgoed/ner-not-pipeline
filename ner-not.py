@@ -1,11 +1,17 @@
 from python_graphql_client import GraphqlClient
 import spacy
 import json
+import sys
 
+if len(sys.argv) == 1:
+  print("Please give filename of textfile to process...")
+  sys.exit()
+  
+filename = sys.argv[1]
 configFile = open('config.json')
 config=json.load(configFile)
 
-with open('some.txt') as f:
+with open(filename) as f:
     text = f.read()
 
 # Specify the Network-of-Terms GraphQL API

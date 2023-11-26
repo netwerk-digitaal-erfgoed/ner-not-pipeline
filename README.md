@@ -27,7 +27,7 @@ It will take a short while to download the almost 600MB sized model.
 
 Start the program with:
 ```
-$ python3 ner-not.py
+$ python3 ner-not.py some.txt
 ```
 
 Change the plain text in the `some.txt` file to try out different results of the pipeline.
