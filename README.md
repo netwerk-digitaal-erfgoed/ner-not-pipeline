@@ -30,7 +30,7 @@ Start the program with:
 $ python3 ner-not.py some.txt
 ```
 
-Change the plain text in the `some.txt` file to try out different results of the pipeline.
+Change the plain text in the `some.txt` file to try out different results for the pipeline.
 
 The pipeline uses the Spacy NER functionality to extract different type of named entities. The extracted entities are fed to the Network of Terms (NoT) to find matching terms. The current program lists the found entities and their type. The reconcilation with the Network of Terms is configured per type. The `config.json` file connects the NER type to the relevant source to query for the Network of Terms.
 
