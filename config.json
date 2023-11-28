@@ -24,5 +24,10 @@
   "EVENT":
     [
       "https://query.wikidata.org/sparql#entities-all"
+    ],
+  "CONCEPT":
+    [
+      "http://vocab.getty.edu/aat/sparql",
+      "https://data.cultureelerfgoed.nl/PoolParty/sparql/term/id/cht"
     ]
 }
