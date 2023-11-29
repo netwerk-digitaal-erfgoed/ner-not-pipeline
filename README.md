@@ -36,4 +36,4 @@ The pipeline uses the Spacy Tokenization and NER functionality to extract keywor
 
 Bases on the configuration all the NoT sources are queried. The results are processed in the order defined in the config file. As soon as one of the found pref- or altLabels has an exact match with the named entity the URI of this term is returned and the processing of the result stops.
 
-The current version lacks keeping track of previous queries and results so the multiple queries are doing for the same keyword or enitity. 
+The result is written as semicolon delimited CSV file with basename of the input file. The outfile contains the complete term information as found in the Network of Terms results. 

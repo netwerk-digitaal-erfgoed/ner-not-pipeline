@@ -75,26 +75,51 @@ def Refine(ner,nerType):
 nlp = spacy.load("nl_core_news_lg")
 doc = nlp(text)
 
+termList = {}
+
 token_details = []
+print("Processing keywords: ",end="")
 for token in doc:
   if(token.pos_=="NOUN"):
-    termFound=Refine(token.text,"CONCEPT")
-    if(termFound):
-      print("TOKEN: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",token.text)
-
+    if not token.text in termList:
+      print(".",end="",flush=True)
+      termFound=Refine(token.text,"CONCEPT")
+      if(termFound):
+        
+        #print("TOKEN: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",token.text)
+        termList[token.text]=termFound
+print("finshed!")
 ner_details = []
 for ent in doc.ents:
   row=(ent.text, ent.label_,spacy.explain(ent.label_))
   if not (row in ner_details):
     ner_details.append(row)
 
+print("Processing named entities: ",end="")
 for row in ner_details:
   ner=row[0].strip().lower()
   nerType=row[1]
-  termFound=Refine(ner,nerType)
-  if(termFound):
-    print("NER: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",ner,)
+  if not ner in termList:
+    print(".",end="",flush=True)
+    termFound=Refine(ner,nerType)
+    if(termFound):
+      termList[ner]=termFound
 
+      #print("NER: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",ner,)
+print("finished!")
+
+outFile=filename.rsplit('.',1)[0] + '.csv'
+with open(outFile,"w") as fileHandle:
+  for term in termList:
+    print(
+      term +";"+
+      termList[term]['uri'] +";"+ 
+      ', '.join(termList[term]['prefLabel']) +";"+
+      ', '.join(termList[term]['altLabel']) +";"+
+      ', '.join(termList[term]['scopeNote']),
+      file=fileHandle
+    )
+print("Results written to",outFile)
 
 
     
