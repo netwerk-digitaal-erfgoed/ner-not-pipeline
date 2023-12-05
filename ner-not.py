@@ -2,6 +2,7 @@ from python_graphql_client import GraphqlClient
 import spacy
 import json
 import sys
+from spacy.matcher import Matcher
 
 if len(sys.argv) == 1:
   print("Please give filename of textfile to process...")
@@ -71,55 +72,69 @@ def Refine(ner,nerType):
           return term
   return False
 
+def processKeywords():
+  token_details = []
+  print("Processing keywords: ",end="")
+  for token in doc:
+    if(token.pos_=="NOUN"):
+      if not token.text in termList:
+        print(".",end="",flush=True)
+        termFound=Refine(token.text,"CONCEPT")
+        if(termFound):
+        
+          #print("TOKEN: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",token.text)
+          termList[token.text]=termFound
+  print("\nKeywords processing finshed!")
 
+def processNERs():
+  ner_details = []
+  for ent in doc.ents:
+    row=(ent.text, ent.label_,spacy.explain(ent.label_))
+    if not (row in ner_details):
+      ner_details.append(row)
+
+  print("Processing named entities: ",end="")
+  for row in ner_details:
+    ner=row[0].strip().lower()
+    nerType=row[1]
+    if not ner in termList:
+      print(".",end="",flush=True)
+      termFound=Refine(ner,nerType)
+      if(termFound):
+        termList[ner]=termFound
+
+        #print("NER: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",ner,)
+  print("\nNER processing finished!")
+
+def writeCSV():
+  outFile=filename.rsplit('.',1)[0] + '.csv'
+  with open(outFile,"w") as fileHandle:
+    for term in termList:
+      print(
+        term +";"+
+        termList[term]['uri'] +";"+ 
+        ', '.join(termList[term]['prefLabel']) +";"+
+        ', '.join(termList[term]['altLabel']) +";"+
+        ', '.join(termList[term]['scopeNote']),
+        file=fileHandle
+      )
+  print("Results written to",outFile)
+
+# load a Dutch language model
 nlp = spacy.load("nl_core_news_lg")
+
+# process the text read from the specified input file
 doc = nlp(text)
 
+# initialize resultlist
 termList = {}
 
-token_details = []
-print("Processing keywords: ",end="")
-for token in doc:
-  if(token.pos_=="NOUN"):
-    if not token.text in termList:
-      print(".",end="",flush=True)
-      termFound=Refine(token.text,"CONCEPT")
-      if(termFound):
-        
-        #print("TOKEN: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",token.text)
-        termList[token.text]=termFound
-print("finshed!")
-ner_details = []
-for ent in doc.ents:
-  row=(ent.text, ent.label_,spacy.explain(ent.label_))
-  if not (row in ner_details):
-    ner_details.append(row)
+# find relevant concepts URIs based on the nouns in the text
+processKeywords()
 
-print("Processing named entities: ",end="")
-for row in ner_details:
-  ner=row[0].strip().lower()
-  nerType=row[1]
-  if not ner in termList:
-    print(".",end="",flush=True)
-    termFound=Refine(ner,nerType)
-    if(termFound):
-      termList[ner]=termFound
+# find relevant URIs for locations and persons based
+# on the namend entities in the text
+processNERs()
 
-      #print("NER: Found matching URI:",termFound['uri'],"with prefLabel",termFound['prefLabel'],"for",ner,)
-print("finished!")
-
-outFile=filename.rsplit('.',1)[0] + '.csv'
-with open(outFile,"w") as fileHandle:
-  for term in termList:
-    print(
-      term +";"+
-      termList[term]['uri'] +";"+ 
-      ', '.join(termList[term]['prefLabel']) +";"+
-      ', '.join(termList[term]['altLabel']) +";"+
-      ', '.join(termList[term]['scopeNote']),
-      file=fileHandle
-    )
-print("Results written to",outFile)
-
-
-    
+# write resultlist out as CSV file
+writeCSV()
