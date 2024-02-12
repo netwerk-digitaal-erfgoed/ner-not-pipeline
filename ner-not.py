@@ -109,6 +109,7 @@ def processNERs():
 def writeCSV():
   outFile=filename.rsplit('.',1)[0] + '.csv'
   with open(outFile,"w") as fileHandle:
+    print('searchTerm;URI;prefLabel;altLabel;scopeNote',file=fileHandle) 
     for term in termList:
       print(
         term +";"+

@@ -5,7 +5,7 @@ Basic experiment for creating an NER and keyword extraction pipeline in combinat
 
 It is recommended to use a virtual environment, create one using the following command:
 ```sh
-$ python3 -m venv ./venv
+$ python -m venv ./venv
 ```
 Then activate the virtual evironment using:
 ```sh
@@ -26,8 +26,8 @@ $ python -m spacy download nl_core_news_lg
 It will take a short while to download the almost 600MB sized model.
 
 Start the program with:
-```
-$ python3 ner-not.py some.txt
+```sh
+$ python ner-not.py some.txt
 ```
 
 Change the plain text in the `some.txt` file to try out different results for the pipeline.
