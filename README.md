@@ -27,13 +27,15 @@ It will take a short while to download the almost 600MB sized model.
 
 Start the program with:
 ```sh
-$ python ner-not.py some.txt
+$ python ner-not.py haarlem.txt
 ```
 
-Change the plain text in the `some.txt` file to try out different results for the pipeline.
+Use different text files to try out different results for the pipeline.
 
 The pipeline uses the Spacy Tokenization and NER functionality to extract keywords and named entities. The identified nouns and named entities are fed to the Network of Terms (NoT) to find matching terms. The reconcilation with the Network of Terms is configured for the different NER types. The `config.json` file connects the NER type to the relevant source to query for the Network of Terms. The nouns are matched against the list of sources specified under "CONCEPT". 
 
 Bases on the configuration all the NoT sources are queried. The results are processed in the order defined in the config file. As soon as one of the found pref- or altLabels has an exact match with the named entity the URI of this term is returned and the processing of the result stops.
 
 The result is written as semicolon delimited CSV file with basename of the input file. The outfile contains the complete term information as found in the Network of Terms results. 
+
+A slightly modified version of the code was created as a Google Colab Notebook with the name 'ner-not-pipeline.ipynb'. From Google Colab this file can be directly imported from Github. 
